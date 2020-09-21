@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <random>
-#include <windows.h>
+//#include <windows.h>
 #include <chrono>
 #include "vector.h"
 
@@ -30,6 +30,8 @@ Point MakeShot(Point departure, double lenght, double phi);
 void DisplayPoint(Point p);
 bool CheckRange(Point p1, Point p2, Point p3);
 Point PointNearLineGeneration(Point p1, Point p2);
+void ShowResult();
+
 
 struct Car {
     Point point;
@@ -55,7 +57,7 @@ int main()
    else
        std::cout << "Result check : Fail. Accuracy worse than nedded";
 
-    DrawGraphs();
+   ShowResult();
            
     //time check;
     //auto begin = std::chrono::steady_clock::now();
@@ -64,6 +66,16 @@ int main()
     
 }
 
+void ShowResult() 
+{
+    int eps = 1;
+    int i = 0;
+
+    for (auto iter = car_move.begin(); iter != car_move.end(); iter++) {
+        std::cout << "Initial point: [" << iter->x << ";" << iter->y << "] " << "Result [" << proection_array[i].x << ";" << proection_array[i].y << "]" << std::endl;
+        i++;
+    }
+}
 
 double GetRandomDouble(double a, double b) {
     std::random_device rd;
@@ -219,54 +231,6 @@ Point GetProection(Point p1, Point p2, Point p3)
 
 }
 
-void DrawPoint(HDC hDC, Point p, int r, int g, int b) 
-{
-    SetPixel(hDC, p.x, p.y, RGB(r, g, b));
-    SetPixel(hDC, p.x + 1, p.y, RGB(r, g, b));
-    SetPixel(hDC, p.x, p.y + 1, RGB(r, g, b));
-    SetPixel(hDC, p.x - 1, p.y, RGB(r, g, b));
-    SetPixel(hDC, p.x, p.y - 1, RGB(r, g, b));
-    SetPixel(hDC, p.x + 1, p.y + 1, RGB(r, g, b));
-    SetPixel(hDC, p.x - 1, p.y - 1, RGB(r, g, b));
-    SetPixel(hDC, p.x + 1, p.y - 1, RGB(r, g, b));
-    SetPixel(hDC, p.x - 1, p.y + 1, RGB(r, g, b));
-}
-
-void DrawGraphs() 
-{
-    POINT op;
-    HWND hWnd = GetConsoleWindow();
-    HDC hDC = GetDC(hWnd);
-    HPEN cP = CreatePen(PS_SOLID, 1, RGB(255, 255, 0));
-    SelectObject(hDC, cP);
-    MoveToEx(hDC, track[0].x, track[0].y, &op);
-    for (int i = 0; i < sizeof(track) / sizeof(track[0]); i++)
-    {
-        if (i == 0)
-            DrawPoint(hDC, track[i], 255, 255, 255);
-        else
-            DrawPoint(hDC, track[i], 0, 0, 255);
-        LineTo(hDC, track[i].x, track[i].y);
-    }
-    cP = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
-    SelectObject(hDC, cP);
-    for (int i = 0; i < sizeof(car) / sizeof(car[0]); i++)
-    {
-        DrawPoint(hDC, car[i][0].point, 255, 0, 0);
-        MoveToEx(hDC, car[i][0].point.x, car[i][0].point.y, &op);
-        LineTo(hDC, proection_array[i].x, proection_array[i].y);
-    }
-
-    cP = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-    SelectObject(hDC, cP);
-
-    for (auto iter = car_move.begin(); iter != car_move.end(); iter++)
-       DrawPoint(hDC, *iter, 0, 255, 0);
-    
-
-    ReleaseDC(hWnd, hDC);
-    std::cin.get();
-}
 
 void Algorithm() 
 {

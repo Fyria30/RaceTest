@@ -1,8 +1,7 @@
 #include "Vector.h"
 #include <cmath>
 #define PI 3.14159265;
-//сделать cmake
-//залить все в git
+
 Vector::Vector(Point p1, Point p2) 
 {
 	a = p1;
