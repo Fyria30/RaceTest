@@ -11,12 +11,12 @@
 
 #define PI 3.14159265
 #define TRACK_SIZE 10
-#define POINTS_PER_LINE 3
+#define POINTS_PER_LINE 10
 #define ACCURACY 50
 #define TRACE_SIZE 500
 #define EPS 0.1
 
-//убрать все погрешности
+
 //used functions
 void TraceGeneration(); 
 void CarGeneration();
@@ -283,8 +283,8 @@ void Algorithm()
        p1 = GetProection(track[count], track[count + 1], car[i]->point);
        angle1 = abs(car[i]->phi - current_vec.GetAngleToOrtoi());
       
-       //if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS))
-       if (angle2 < angle1)
+       if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS))
+      // if (angle2 < angle1)
            count++;
 
            proection_array[i] = GetProection(track[count], track[count + 1], car[i]->point);
