@@ -11,12 +11,12 @@
 
 #define PI 3.14159265
 #define TRACK_SIZE 10
-#define POINTS_PER_LINE 10
+#define POINTS_PER_LINE 3
 #define ACCURACY 50
 #define TRACE_SIZE 500
 #define EPS 0.1
 
-
+//убрать все погрешности
 //used functions
 void TraceGeneration(); 
 void CarGeneration();
@@ -30,7 +30,6 @@ bool CheckResult(); // Compare initial array of points and proection array
 double GetRandomPhi(double phi);
 Point MakeShot(Point departure, double lenght, double phi);
 void DisplayPoint(Point p);
-bool CheckRange(Point p1, Point p2, Point p3);
 Point PointNearLineGeneration(Point p1, Point p2);
 
 
@@ -49,10 +48,6 @@ Point proection_array[POINTS_PER_LINE * TRACK_SIZE]; // final result of proectio
 int main()
 {
    TraceGeneration();
-   // track[0] = Point{0,0};
-   // track[1] = Point{100,100};
-   // track[2] = Point{150,50};
-
    CarGeneration();
    Algorithm();
 
@@ -85,7 +80,7 @@ double GetRandomDouble(double a, double b) {
 }
 
 bool CheckResult() {
-    int eps = 1;
+    int eps = 10;
     int i = 0;
 
     for (auto iter = car_move.begin(); iter != car_move.end(); iter++)
@@ -130,16 +125,6 @@ void DisplayPoint(Point p)
     std::cout << "Point x: " << p.x << " y: " << p.y << std::endl;
 }
 
-bool CheckRange(Point p1, Point p2, Point p3)
-{
-    if (p3.x >= p1.x && p3.x <= p2.x || p3.y >= p1.y && p3.y <= p2.y || p3.x <= p1.x && p3.x >= p2.x || p3.y <= p1.y && p3.y >= p2.y)// упростить
-        return true;
-    else return false;
-
-
-
-}
-
 void TraceGeneration()
 {
     for (int i = 0; i < sizeof(track) / sizeof(track[0]); i++) {
@@ -147,7 +132,6 @@ void TraceGeneration()
         track[i].y = GetRandomDouble(60, TRACE_SIZE);
     }
 }
-
 
 Point PointNearLineGeneration(Point p1, Point p2)
 {
@@ -221,8 +205,8 @@ Point GetProection(Point p1, Point p2, Point p3)
     lenght_x = vec.GetLenght_X();
     lenght_y = vec.GetLenght_Y();
     t = (lenght_x * p3.x + lenght_y * p3.y - lenght_x * p1.x - lenght_y * p1.y) / (pow(lenght_x,2)+pow(lenght_y,2));
-    result.x = round(lenght_x * t + p1.x);
-    result.y = round(lenght_y * t + p1.y);
+    result.x = round(lenght_x * t) + p1.x;
+    result.y = round(lenght_y * t) + p1.y;
 
     return result;
 
@@ -284,21 +268,33 @@ void Algorithm()
     Vector current_vec, next_vec;
     Point p1, p2;
 
-    for (int i = 0; i < sizeof(car) / sizeof(car[0]); i++)
+
+    for (int i = 0; i < sizeof(car) / sizeof(car[0]); i++) // Разобраться с размерностью массивов
     {
        angle1, angle2 = 360;
  
+       if( (count+1) != TRACK_SIZE )
+       {
        next_vec = Vector(track[count + 1], track[count + 2]);
        angle2 = abs(car[i]->phi - next_vec.GetAngleToOrtoi());
+       }
 
        current_vec = Vector(track[count], track[count + 1]);
        p1 = GetProection(track[count], track[count + 1], car[i]->point);
        angle1 = abs(car[i]->phi - current_vec.GetAngleToOrtoi());
       
-       if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS))
+       //if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS))
+       if (angle2 < angle1)
            count++;
 
-       proection_array[i] = GetProection(track[count], track[count + 1], car[i]->point);
+           proection_array[i] = GetProection(track[count], track[count + 1], car[i]->point);
+            
+           auto iter = car_move.begin();
+
+           if (abs(iter[i].x - proection_array[i].x) > 1 || abs(iter[i].y - proection_array[i].y > 1))
+           {
+               current_vec.CheckPoint(p1, EPS);
+           }
 
     }
 }
@@ -307,6 +303,7 @@ void Algorithm()
 void CarGeneration() {
     double step, part_lenght;
     Vector vec;
+    Point p;
 
     Point uniform_points[POINTS_PER_LINE + 2];
     for (int i = 0; i < sizeof(track) / sizeof(track[0]) - 1; i++) {
@@ -316,17 +313,20 @@ void CarGeneration() {
         uniform_points[0] = track[i];
         uniform_points[POINTS_PER_LINE + 1] = track[i + 1];
         vec = Vector(uniform_points[0], uniform_points[POINTS_PER_LINE + 1]);
+       
         //Values without random
-        for (int j = 1; j < POINTS_PER_LINE + 1; j++)//нужно разбить цикл на несколько или очень красиво все оформить
+        for (int j = 1; j < POINTS_PER_LINE + 1; j++){
             uniform_points[j] = MoveAlongLine(track[i], GetRandomDouble(step * j - step, step * j), vec.GetAngleToOrtoi());
+        }
 
         vec = Vector(uniform_points[0], uniform_points[POINTS_PER_LINE + 1]);
         for (int j = 0; j < sizeof(uniform_points) / sizeof(uniform_points[0]) - 2; j++) {
+            Point init_point;
+            do {
+                
             //Values with random on the line -> That's proection of points on the line
-            car[i * POINTS_PER_LINE + j][0].point = MoveAlongLine(uniform_points[j], GetRandomDouble(0, part_lenght), vec.GetAngleToOrtoi());
-            // Values for the check later
-            car_move.push_back(car[i * POINTS_PER_LINE + j][0].point);
-
+            init_point  = MoveAlongLine(uniform_points[j], GetRandomDouble(0, part_lenght), vec.GetAngleToOrtoi());
+           
             //Basing on points, making random perpendicular to the line points; It can be done much easier.
             vec = Vector(track[i], track[i + 1]);
             double a = vec.GetAngleToOrtoi();
@@ -341,9 +341,16 @@ void CarGeneration() {
             if (GetRandomDouble(0, 1) > 0.5)
                 line_angle = line_angle + 180;
 
-            car[i * POINTS_PER_LINE + j][0].point = MoveAlongLine(car[i * POINTS_PER_LINE + j][0].point, GetRandomDouble(0, ACCURACY), line_angle + a);
+            car[i * POINTS_PER_LINE + j][0].point = MoveAlongLine(init_point, GetRandomDouble(0, ACCURACY), line_angle + a);
             car[i * POINTS_PER_LINE + j][0].phi = vec.GetAngleToOrtoi();
+           
+            p = GetProection(track[i], track[i + 1], car[i * POINTS_PER_LINE + j][0].point);
+        } while (p.x != init_point.x && p.y != init_point.y && !Vector(track[i],track[i+1]).CheckPoint(p,EPS));
+
+        // Values for the check later
+        car_move.push_back(init_point);
         }
+        
 
     }
 }

@@ -58,7 +58,11 @@ Vector Vector::DevisionVectorByNumber(Vector vec, int number) {
 
 double  Vector::GetAngleBetweenVectors(Vector vec)
 {
+	if (vec.GetVectorLenght() == 0 || this->GetVectorLenght() == 0)
+		return 0;
+
 	double t = (lenght_x * vec.GetLenght_X() + lenght_y * vec.GetLenght_Y()) / (sqrt((double)pow(lenght_x, 2) + pow(lenght_y, 2)) * sqrt((double)pow(vec.GetLenght_X(), 2) + pow(vec.GetLenght_Y(), 2)));
+
 	if (t < -1) t = -1;
 	else if (t > 1) t = 1;
 	double r = acos(t) * 180 / PI;
