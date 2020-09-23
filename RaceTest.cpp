@@ -39,7 +39,6 @@ struct Car {
     double phi;
 };
 
-
 Point track[TRACK_SIZE + 1]; //consists of track points
 std::vector <Point> car_move; // consists of a real car positions
 Car car[POINTS_PER_LINE * TRACK_SIZE][3]; //consists of a car from sensors
@@ -284,17 +283,11 @@ void Algorithm()
        angle1 = abs(car[i]->phi - current_vec.GetAngleToOrtoi());
       
        if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS))
-      // if (angle2 < angle1)
            count++;
 
            proection_array[i] = GetProection(track[count], track[count + 1], car[i]->point);
             
            auto iter = car_move.begin();
-
-           if (abs(iter[i].x - proection_array[i].x) > 1 || abs(iter[i].y - proection_array[i].y > 1))
-           {
-               current_vec.CheckPoint(p1, EPS);
-           }
 
     }
 }
