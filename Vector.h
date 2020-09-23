@@ -17,7 +17,6 @@ public:
 	Vector();
 	Vector DevisionVectorByNumber(int number);
 	Vector DevisionVectorByNumber(Vector vec, int number);
-	Vector GetVectorbyPoints(Point p1, Point p2);
 	Vector GetOrti();
 	Point GetPointA();
 	Point GetPointB();
@@ -28,6 +27,8 @@ public:
 	double GetAngleToOrtoi();
 	double GetVectorLenght(Point p1, Point p2);
 	double GetVectorLenght();
+	double ScalarProduct(Vector v1);
+	bool CheckPoint(Point p, double eps);
 
 	
 

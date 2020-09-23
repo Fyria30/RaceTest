@@ -1,8 +1,7 @@
 #include "Vector.h"
 #include <cmath>
-#define PI 3.14159265;
-//сделать cmake
-//залить все в git
+#define PI 3.14159265
+
 Vector::Vector(Point p1, Point p2) 
 {
 	a = p1;
@@ -69,7 +68,7 @@ double  Vector::GetAngleBetweenVectors(Vector vec)
 		return 360 - r;
 }
 
-double GetAngleBetweenVectors(Vector v1, Vector v2) // ??? по принадлежности к классу
+double Vector::GetAngleBetweenVectors(Vector v1, Vector v2) 
 {
 	return v1.GetAngleBetweenVectors(v2);
 }
@@ -78,8 +77,6 @@ double Vector::GetAngleToOrtoi() {
 	Vector orti{ Point{0,0}, Point{1,0} };
 	return this->GetAngleBetweenVectors(orti);
 }
-
-
 
 
 double Vector::GetVectorLenght(Point p1, Point p2)
@@ -91,4 +88,24 @@ double Vector::GetVectorLenght()
 {
 	return sqrt(pow(lenght_x, 2) + pow(lenght_y, 2));
 }
+
+double Vector::ScalarProduct(Vector vec) 
+{   
+	return this->GetVectorLenght() * vec.GetVectorLenght() * cos(this->GetAngleBetweenVectors(vec)/180 * PI);
+}
+
+bool Vector::CheckPoint(Point p, double eps) 
+{
+	Vector vec = Vector(this->GetPointA(), p);
+	double angle = sin(this->GetAngleBetweenVectors(vec)/180*PI);
+
+	if ((p.x >= this->GetPointA().x && p.x <= this->GetPointB().x || p.x <= this->GetPointA().x && p.x >= this->GetPointB().x) && abs(angle) < eps)
+		return true;
+	else return false;
+
+}
+
+
+
+
 

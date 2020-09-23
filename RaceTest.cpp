@@ -9,11 +9,13 @@
 #include <chrono>
 #include "vector.h"
 
-#define PI 3.14159265;
-#define TRACK_SIZE 5
-#define POINTS_PER_LINE 2
-#define ACCURACY 30
+#define PI 3.14159265
+#define TRACK_SIZE 10
+#define POINTS_PER_LINE 10
+#define ACCURACY 50
 #define TRACE_SIZE 500
+#define EPS 0.1
+
 
 //used functions
 void TraceGeneration(); 
@@ -31,6 +33,7 @@ void DisplayPoint(Point p);
 bool CheckRange(Point p1, Point p2, Point p3);
 Point PointNearLineGeneration(Point p1, Point p2);
 
+
 struct Car {
     Point point;
     double v;
@@ -46,10 +49,14 @@ Point proection_array[POINTS_PER_LINE * TRACK_SIZE]; // final result of proectio
 int main()
 {
    TraceGeneration();
+   // track[0] = Point{0,0};
+   // track[1] = Point{100,100};
+   // track[2] = Point{150,50};
+
    CarGeneration();
    Algorithm();
 
-   bool b = CheckResult();
+
    if (CheckResult())
        std::cout << "Result check : Success";
    else
@@ -61,7 +68,7 @@ int main()
     //auto begin = std::chrono::steady_clock::now();
     //auto end = std::chrono::steady_clock::now();
     //auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-    
+
 }
 
 
@@ -128,8 +135,10 @@ bool CheckRange(Point p1, Point p2, Point p3)
     if (p3.x >= p1.x && p3.x <= p2.x || p3.y >= p1.y && p3.y <= p2.y || p3.x <= p1.x && p3.x >= p2.x || p3.y <= p1.y && p3.y >= p2.y)// упростить
         return true;
     else return false;
-}
 
+
+
+}
 
 void TraceGeneration()
 {
@@ -271,28 +280,22 @@ void DrawGraphs()
 void Algorithm() 
 {
     int count = 0;
-    double distance1, distance2, angle1, angle2;
-    Vector vec;
+    double angle1, angle2;
+    Vector current_vec, next_vec;
+    Point p1, p2;
 
     for (int i = 0; i < sizeof(car) / sizeof(car[0]); i++)
     {
-       distance1, distance2 = -1;
-
-       vec = Vector(track[count + 1], track[count + 2]);
-       distance2 = GetDistance(track[count + 1], track[count + 2], car[i]->point);
-       angle2 = abs(car[i]->phi - vec.GetAngleToOrtoi());
-
-       vec = Vector(track[count], track[count + 1]);
-       distance1 = GetDistance(track[count], track[count + 1], car[i]->point);
-       angle1 = abs(car[i]->phi - vec.GetAngleToOrtoi());
+       angle1, angle2 = 360;
  
-       //make a desicion
-       if (distance2 == -1 && distance1 == -1)
-           std::cout << "Can not find a line!";
-       else if (distance1 == -1)
-           count++;
-       else if (distance2 == -1);
-       else if (angle2 < angle1)
+       next_vec = Vector(track[count + 1], track[count + 2]);
+       angle2 = abs(car[i]->phi - next_vec.GetAngleToOrtoi());
+
+       current_vec = Vector(track[count], track[count + 1]);
+       p1 = GetProection(track[count], track[count + 1], car[i]->point);
+       angle1 = abs(car[i]->phi - current_vec.GetAngleToOrtoi());
+      
+       if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS))
            count++;
 
        proection_array[i] = GetProection(track[count], track[count + 1], car[i]->point);
