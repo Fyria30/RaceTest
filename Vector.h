@@ -1,14 +1,14 @@
 #pragma once
 struct Point {
-	int x;
-	int y;
+	double x;
+	double y;
 };
 
 class Vector
 {
 private:
-	int lenght_x;
-	int lenght_y;
+	double lenght_x;
+	double lenght_y;
 	Point a;
 	Point b;
 
@@ -20,8 +20,8 @@ public:
 	Vector GetOrti();
 	Point GetPointA();
 	Point GetPointB();
-	int GetLenght_X();
-	int GetLenght_Y();
+	double GetLenght_X();
+	double GetLenght_Y();
 	double GetAngleBetweenVectors(Vector vec1, Vector vec2);
 	double GetAngleBetweenVectors(Vector vec);
 	double GetAngleToOrtoi();

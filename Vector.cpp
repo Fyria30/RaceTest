@@ -4,6 +4,8 @@
 
 Vector::Vector(Point p1, Point p2) 
 {
+
+
 	a = p1;
 	b = p2;
 	lenght_x = p2.x - p1.x;
@@ -34,12 +36,12 @@ Point Vector::GetPointB()
 {
 	return b;
 }
-int Vector::GetLenght_X()
+double Vector::GetLenght_X()
 {
 	return lenght_x;
 }
 
-int Vector::GetLenght_Y()
+double Vector::GetLenght_Y()
 {
 	return lenght_y;
 }
