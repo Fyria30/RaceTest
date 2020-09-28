@@ -216,14 +216,8 @@ void Algorithm()
        if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS))
            count++;
 
-      // if (current_vec.CheckPoint(p1, EPS))
-      //   int a = 1;
-       current_vec.CheckPoint(p1, EPS);
-      
-           //proection_array[i] = GetProection(track[count], track[count + 1], car[i].point);
            proection_array.push_back(GetProection(track[count], track[count + 1], car[i].point));
-            
-           auto iter = car_move.begin();
+
 
     }
 }
