@@ -37,7 +37,6 @@ std::vector <Point> car_move; // consists of a real car positions
 std::vector <Car> car;//consists of a car from sensors
 std::vector <Point> proection_array; // final result of proections
 
-
 int main()
 {
    TraceGeneration();
@@ -58,6 +57,7 @@ int main()
     std::cin.get();
 }
 
+
 bool PointCompare(Point p1, Point p2, double eps) {
 
     if (abs(p1.x - p2.x) > eps || abs(p1.y - p2.y) > eps)
@@ -65,6 +65,7 @@ bool PointCompare(Point p1, Point p2, double eps) {
     else
         return true;
 }
+
 double GetRandomDouble(double a, double b) {
     std::random_device rd;
     std::mt19937 gen;
@@ -212,7 +213,7 @@ void Algorithm()
        p1 = GetProection(track[count], track[count + 1], car[i].point);
        angle1 = abs(car[i].phi - current_vec.GetAngleToOrtoi());
       
-       if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS)) // поймать ошибку.
+       if (angle2 < angle1 || !current_vec.CheckPoint(p1, EPS))
            count++;
 
       // if (current_vec.CheckPoint(p1, EPS))
@@ -251,8 +252,7 @@ void CarGeneration() {
         vec = Vector(uniform_points[0], uniform_points[POINTS_PER_LINE + 1]);
         for (int j = 0; j < sizeof(uniform_points) / sizeof(uniform_points[0]) - 2; j++) {
             Point init_point;
-            //do {
-                
+                       
             //Values with random on the line -> That's proection of points on the line
             init_point  = MoveAlongLine(uniform_points[j], GetRandomDouble(0, part_lenght), vec.GetAngleToOrtoi());
            
@@ -274,9 +274,7 @@ void CarGeneration() {
             c.point = MoveAlongLine(init_point, GetRandomDouble(0, ACCURACY), line_angle + a);
             c.phi = vec.GetAngleToOrtoi();
             car.push_back(c);
-            //p = GetProection(track[i], track[i + 1], car[i * POINTS_PER_LINE + j][0].point);
-        //} while (p.x != init_point.x && p.y != init_point.y && !Vector(track[i],track[i+1]).CheckPoint(p,EPS));
-
+         
         // Values for the check later
         car_move.push_back(init_point);
         }
