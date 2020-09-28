@@ -196,10 +196,10 @@ void Algorithm()
     int count = 0;
     double angle1, angle2;
     Vector current_vec, next_vec;
-    Point p1, p2;
+    Point p1;
 
 
-    for (int i = 0; i < car.size(); i++) // Разобраться с размерностью массивов
+    for (int i = 0; i < car.size(); i++)
     {
        angle1, angle2 = 360;
  
